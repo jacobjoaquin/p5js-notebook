@@ -1,3 +1,10 @@
+/*
+    Sokoban Clone
+    Implemented by: Jacob Joaquin
+    GitHub: https://github.com/jacobjoaquin
+    Tumblr: http://jacobjoaquin.tumblr.com/
+*/
+
 // var elements = {
 //     '#': 'wall',
 //     '@': 'player',
@@ -46,6 +53,15 @@ DisplayableList.prototype.display = function(self) {
         this[i].display();
     }
 };
+DisplayableList.prototype.getItem = function(x, y) {
+    for (var i = 0; i < this.length; i++) {
+        var w = this[i];
+        if (w.position.x === x && w.position.y === y) {
+            return w;
+        }
+    }
+    return null;
+}
 
 function Sokoban() {
     this.tileSize = (width - 1) / 10;
@@ -133,16 +149,34 @@ Sokoban.prototype.display = function() {
     this.player.display();
     pop();
 }
+Sokoban.prototype.movePlayer = function(x, y) {
+    var x1 = x + this.player.position.x;
+    var y1 = y + this.player.position.y;
+    if (!this.walls.getItem(x1, y1)) {
+        var box = this.boxes.getItem(x1, y1);
+        if (!box) {
+            this.player.position.set(x1, y1);
+        } else {
+           var x2 = x1 + x;
+           var y2 = y2 + y;
+           if (!(this.walls.getItem(x2, x2)) || this.boxes.getItem(x2, y2)) {
+                this.player.position.set(x1, y1);
+                box.position.x += x;
+                box.position.y += y;
+           }
+        }
+    }
+}
 Sokoban.prototype.processKey = function(k) {
     k = k.toLowerCase();
     if (k === "w") {
-        this.player.position.y--;
+        this.movePlayer(0, -1);
     } else if (k === "a") {
-        this.player.position.x--;
+        this.movePlayer(-1, 0);
     } else if (k === "s") {
-        this.player.position.y++;
+        this.movePlayer(0, 1);
     } else if (k === "d") {
-        this.player.position.x++;
+        this.movePlayer(1, 0);
     }
 
     redraw();
