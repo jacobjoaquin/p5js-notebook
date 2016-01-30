@@ -11,7 +11,9 @@
 var sokoban;
 var processGlyph;
 var levels = [
-    '-3#-#|#.@-#-#|#$*-$-#|#3-$-#|#-..--#|#--*--#|-5#'
+    '-3#-#|#.@-#-#|#$*-$-#|#3-$-#|#-..--#|#--*--#|-5#',
+    '-3#-#####|#.@-#-#|#$*-$-#|#3-$-#|#-..--#|#--*--#|-5#',
+    '-3#-#|#.@-#-#|#$*-$-#|#3-$-#|#-..--#|#--*--#|#--*--#|#--*--#|-5#',
 ];
 
 function setup() {
@@ -51,6 +53,8 @@ function Sokoban() {
     this.goals = new DisplayableList();
     this.boxes = new DisplayableList();
     this.player = new Player();
+    this.levelOffset = createVector(0, 0);
+    this.scale = 1;
 }
 Sokoban.prototype.loadTileMap = {
     '#': function(x, y) {
@@ -81,7 +85,7 @@ Sokoban.prototype.loadTile = function(tile, x, y) {
     this.loadTileMap[tile](x, y);
 }
 Sokoban.prototype.initLevel = function() {
-    encodedLevel = levels[0];
+    encodedLevel = levels[2];
     var x = 0;
     var y = 0;
     var i = 0;
@@ -106,7 +110,11 @@ Sokoban.prototype.initLevel = function() {
     this.updateViewport();
 }
 Sokoban.prototype.updateViewport = function() {
-    print(this.walls.getBoundaries());
+    var borderSize = 1;
+    var b = this.walls.getBoundaries();
+    var m = max(b[1].x, b[1].y);
+    this.levelOffset.set(borderSize / 2 + (m - b[1].x) / 2, borderSize / 2 + (m - b[1].y) / 2);
+    this.scale = (width - 1) / (m + 1 + borderSize);
 }
 Sokoban.prototype.update = function() {
     this.walls.update();
@@ -115,8 +123,10 @@ Sokoban.prototype.update = function() {
     this.player.update();
 }
 Sokoban.prototype.display = function() {
+
     push();
-    scale(50);
+    scale(this.scale);
+    translate(this.levelOffset.x, this.levelOffset.y);
     this.walls.display();
     this.goals.display();
     this.boxes.display();
