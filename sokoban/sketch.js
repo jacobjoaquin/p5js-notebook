@@ -132,7 +132,7 @@ Sokoban.prototype.loadTile = function(tile, x, y) {
     this.loadTileMap[tile](x, y);
 }
 Sokoban.prototype.initLevel = function(level) {
-    encodedLevel = levels[3];
+    encodedLevel = levels[0];
     var x = 0;
     var y = 0;
     var i = 0;
@@ -140,8 +140,15 @@ Sokoban.prototype.initLevel = function(level) {
     while (i < encodedLevel.length) {
         var e = encodedLevel[i++];
         if (!isNaN(e)) {
-            e = parseInt(e);
+            // Check and get more than single digit
             var e1 = encodedLevel[i++];
+            while (!isNaN(e1)) {
+                e += e1;
+                e1 = encodedLevel[i++];
+            }
+
+            // Create multiple tiles
+            e = parseInt(e);
             var t = x + e;
             while (x < t) {
                 this.loadTile(e1, x++, y);
