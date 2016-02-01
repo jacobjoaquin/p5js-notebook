@@ -55,7 +55,8 @@ var levels = [
 ];
 
 function setup() {
-    createCanvas(400, 400);
+    var c = createCanvas(400, 400);
+    c.parent("game-window");
     sokoban = new Sokoban();
     sokoban.initLevel();
 }
@@ -66,8 +67,8 @@ function draw() {
     sokoban.display();
 }
 
-function keyTyped() {
-    sokoban.processKey(key);
+function keyPressed() {
+    sokoban.processKey(keyCode);
 }
 
 function DisplayableList() {};
@@ -234,30 +235,29 @@ Sokoban.prototype.movePlayer = function(direction) {
     }
 }
 Sokoban.prototype.processKey = function(k) {
-    k = k.toLowerCase();
-
+    var s = String.fromCharCode(k).toLowerCase();
     // Handle player moves
-    if (k === "w") {
+    if (s === "w" || k === UP_ARROW) {
         this.movePlayer(this.UP);
-    } else if (k === "a") {
+    } else if (s === "a" || k === LEFT_ARROW) {
         this.movePlayer(this.LEFT);
-    } else if (k === "s") {
+    } else if (s === "s" || k === DOWN_ARROW) {
         this.movePlayer(this.DOWN);
-    } else if (k === "d") {
+    } else if (s === "d" || k === RIGHT_ARROW) {
         this.movePlayer(this.RIGHT);
     }
 
     // Handle undo
-    else if (k === "u") {
+    else if (s === "u") {
         this.undoMove();
     }
 
     // Handle changing levels
-    else if (k === "n") {
+    else if (s === "n") {
         this.nextLevel();
-    } else if (k === "p") {
+    } else if (s === "p") {
         this.previousLevel();
-    } else if (k === "r") {
+    } else if (s === "r") {
         this.resetLevel();
     }
 }
