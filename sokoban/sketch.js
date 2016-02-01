@@ -55,7 +55,7 @@ var levels = [
 ];
 
 function setup() {
-    createCanvas(500, 500);
+    createCanvas(400, 400);
     sokoban = new Sokoban();
     sokoban.initLevel();
 }
@@ -95,6 +95,7 @@ DisplayableList.prototype.getItem = function(x, y) {
 
 function Sokoban() {
     this.currentLevel = 0;
+    this.moves = 0;
     this.tileSize = (width - 1) / 10;
     this.walls = new Walls();
     this.goals = new DisplayableList();
@@ -136,6 +137,7 @@ Sokoban.prototype.initLevel = function() {
     this.goals = new DisplayableList();
     this.boxes = new DisplayableList();
     this.player = new Player();
+    this.moves = 0;
     var encodedLevel = levels[this.currentLevel];
     var x = 0;
     var y = 0;
@@ -165,6 +167,8 @@ Sokoban.prototype.initLevel = function() {
         }
     }
 
+    this.setLevelText(this.currentLevel);
+    this.setMovesText(this.moves);
     this.updateViewport();
 }
 Sokoban.prototype.updateViewport = function() {
@@ -179,6 +183,12 @@ Sokoban.prototype.update = function() {
     this.goals.update();
     this.boxes.update();
     this.player.update();
+}
+Sokoban.prototype.setLevelText = function(v) {
+    document.getElementById("sokoban-level").innerHTML = v;
+}
+Sokoban.prototype.setMovesText = function(v) {
+    document.getElementById("sokoban-moves").innerHTML = v;
 }
 Sokoban.prototype.display = function() {
     push();
@@ -197,13 +207,11 @@ Sokoban.prototype.movePlayer = function(x, y) {
     if (!this.walls.getItem(x1, y1)) {
         var box = this.boxes.getItem(x1, y1);
         if (!box) {
-            this.player.position.set(x1, y1);
             didMove = true;
         } else {
            var x2 = x1 + x;
            var y2 = y1 + y;
            if (!this.walls.getItem(x2, y2) && !this.boxes.getItem(x2, y2)) {
-                this.player.position.set(x1, y1);
                 didMove = true;
                 box.position.x += x;
                 box.position.y += y;
@@ -211,8 +219,12 @@ Sokoban.prototype.movePlayer = function(x, y) {
         }
     }
 
-    if (didMove && this.didWin()) {
-        this.nextLevel();
+    if (didMove) {
+        this.player.position.set(x1, y1);
+        this.setMovesText(++this.moves);
+        if (this.didWin()) {
+            this.nextLevel();
+        }
     }
 }
 Sokoban.prototype.processKey = function(k) {
