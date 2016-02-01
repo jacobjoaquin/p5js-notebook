@@ -194,19 +194,26 @@ Sokoban.prototype.display = function() {
 Sokoban.prototype.movePlayer = function(x, y) {
     var x1 = x + this.player.position.x;
     var y1 = y + this.player.position.y;
+    var didMove = false;
     if (!this.walls.getItem(x1, y1)) {
         var box = this.boxes.getItem(x1, y1);
         if (!box) {
             this.player.position.set(x1, y1);
+            didMove = true;
         } else {
            var x2 = x1 + x;
            var y2 = y1 + y;
            if (!this.walls.getItem(x2, y2) && !this.boxes.getItem(x2, y2)) {
                 this.player.position.set(x1, y1);
+                didMove = true;
                 box.position.x += x;
                 box.position.y += y;
            }
         }
+    }
+
+    if (didMove && this.didWin()) {
+        this.nextLevel();
     }
 }
 Sokoban.prototype.processKey = function(k) {
@@ -240,6 +247,15 @@ Sokoban.prototype.previousLevel = function() {
     this.currentLevel--;
     this.currentLevel = max(this.currentLevel, 0);
     this.initLevel(this.currentLevel);
+}
+Sokoban.prototype.didWin = function() {
+    for (var i = 0; i < this.goals.length; i++) {
+        var goal = this.goals[i];
+        if (!this.boxes.getItem(goal.position.x, goal.position.y)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function Walls() {}
@@ -318,7 +334,7 @@ Player.prototype.display = function() {
     translate(this.position.x, this.position.y);
     translate(0.25, 0.25);
     noStroke();
-    fill(0, 255, 0);
+    fill(255, 0, 0);
     rect(0, 0, 0.5, 0.55);
     pop();
 }
