@@ -58,7 +58,6 @@ function setup() {
     createCanvas(500, 500);
     sokoban = new Sokoban();
     sokoban.initLevel();
-    noLoop();
 }
 
 function draw() {
@@ -137,7 +136,7 @@ Sokoban.prototype.initLevel = function() {
     this.goals = new DisplayableList();
     this.boxes = new DisplayableList();
     this.player = new Player();
-    encodedLevel = levels[this.currentLevel];
+    var encodedLevel = levels[this.currentLevel];
     var x = 0;
     var y = 0;
     var i = 0;
@@ -235,8 +234,9 @@ Sokoban.prototype.processKey = function(k) {
         this.nextLevel();
     } else if (k === "p") {
         this.previousLevel();
+    } else if (k === "r") {
+        this.resetLevel();
     }
-    redraw();
 }
 Sokoban.prototype.nextLevel = function() {
     this.currentLevel++;
@@ -246,6 +246,9 @@ Sokoban.prototype.nextLevel = function() {
 Sokoban.prototype.previousLevel = function() {
     this.currentLevel--;
     this.currentLevel = max(this.currentLevel, 0);
+    this.initLevel(this.currentLevel);
+}
+Sokoban.prototype.resetLevel = function() {
     this.initLevel(this.currentLevel);
 }
 Sokoban.prototype.didWin = function() {
@@ -305,7 +308,7 @@ Goal.prototype.display = function() {
     translate(this.position.x, this.position.y);
     ellipseMode(CORNER);
     noStroke();
-    fill(0);
+    fill(0, 0, 255);
     ellipse(0, 0, 1, 1);
     pop();
 }
