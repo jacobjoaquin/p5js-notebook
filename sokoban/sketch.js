@@ -83,10 +83,10 @@ DisplayableList.prototype.display = function(self) {
         this[i].display();
     }
 };
-DisplayableList.prototype.getItem = function(x, y) {
+DisplayableList.prototype.getItem = function(position) {
     for (var i = 0; i < this.length; i++) {
         var w = this[i];
-        if (w.position.x === x && w.position.y === y) {
+        if (w.position.equals(position)) {
             return w;
         }
     }
@@ -103,6 +103,10 @@ function Sokoban() {
     this.player = new Player();
     this.levelOffset = createVector(0, 0);
     this.scale = 1;
+    this.UP = createVector(0, -1);
+    this.LEFT = createVector(-1, 0);
+    this.DOWN = createVector(0, 1);
+    this.RIGHT = createVector(1, 0);
 }
 Sokoban.prototype.loadTileMap = {
     '#': function(x, y) {
@@ -201,32 +205,28 @@ Sokoban.prototype.display = function() {
     this.player.display();
     pop();
 }
-Sokoban.prototype.movePlayer = function(x, y) {
-    var x1 = x + this.player.position.x;
-    var y1 = y + this.player.position.y;
+Sokoban.prototype.movePlayer = function(direction) {
+    var v1 = direction.copy().add(this.player.position);
     var didMove = false;
     var move = {};
-    if (!this.walls.getItem(x1, y1)) {
-        var box = this.boxes.getItem(x1, y1);
+    if (!this.walls.getItem(v1)) {
+        var box = this.boxes.getItem(v1);
         if (!box) {
             didMove = true;
         } else {
-           var x2 = x1 + x;
-           var y2 = y1 + y;
-           if (!this.walls.getItem(x2, y2) && !this.boxes.getItem(x2, y2)) {
+            var v2 = v1.copy().add(direction);
+            if (!this.walls.getItem(v2) && !this.boxes.getItem(v2)) {
                 didMove = true;
-                box.position.x += x;
-                box.position.y += y;
+                box.position.add(direction);
                 move.box = box;
-           }
+            }
         }
     }
 
     if (didMove) {
-        move.x = x;
-        move.y = y;
+        move.direction = direction.copy();
         this.undo.push(move);
-        this.player.position.set(x1, y1);
+        this.player.position = v1;
         this.setMovesText(++this.moves);
         if (this.didWin()) {
             this.nextLevel();
@@ -238,13 +238,13 @@ Sokoban.prototype.processKey = function(k) {
 
     // Handle player moves
     if (k === "w") {
-        this.movePlayer(0, -1);
+        this.movePlayer(this.UP);
     } else if (k === "a") {
-        this.movePlayer(-1, 0);
+        this.movePlayer(this.LEFT);
     } else if (k === "s") {
-        this.movePlayer(0, 1);
+        this.movePlayer(this.DOWN);
     } else if (k === "d") {
-        this.movePlayer(1, 0);
+        this.movePlayer(this.RIGHT);
     }
 
     // Handle undo
@@ -264,14 +264,10 @@ Sokoban.prototype.processKey = function(k) {
 Sokoban.prototype.undoMove = function() {
     if (this.undo.length > 0) {
         var move = this.undo.pop();
-        print(move);
-        move.x *= -1;
-        move.y *= -1;
-        this.player.position.x += move.x;
-        this.player.position.y += move.y;
+        move.direction.mult(-1);
+        this.player.position.add(move.direction);
         if (move.box) {
-            move.box.position.x += move.x;
-            move.box.position.y += move.y;
+            move.box.position.add(move.direction);
         }
         this.setMovesText(--this.moves);
     }
@@ -292,7 +288,7 @@ Sokoban.prototype.resetLevel = function() {
 Sokoban.prototype.didWin = function() {
     for (var i = 0; i < this.goals.length; i++) {
         var goal = this.goals[i];
-        if (!this.boxes.getItem(goal.position.x, goal.position.y)) {
+        if (!this.boxes.getItem(goal.position)) {
             return false;
         }
     }
