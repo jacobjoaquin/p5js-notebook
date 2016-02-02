@@ -134,26 +134,28 @@ Sokoban.prototype.loadTileMap = {
     '.': function(x, y) {
         sokoban.goals.push(new Goal(x, y));
     },
-    '-': function(x, y) {
-        //sokoban.floors.push(new Floor(x, y))
-    }
+    '-': function(x, y) {}
 }
 Sokoban.prototype.loadTile = function(tile, x, y) {
     this.loadTileMap[tile](x, y);
 
-    // Do floors()
-//    var position = this.player.position.copy();
-//    this.floors.push(position.x, position.y);
-
 }
 Sokoban.prototype.fillFloors = function(position) {
     var directions = [this.RIGHT, this.DOWN, this.LEFT, this.UP];
+    var floor = this.floors.getItem(position);
+    var wall = this.walls.getItem(position);
 
-    if (floors.getItem(position)) {
+    if (floor || wall) {
         return;
     } else {
         // Create floor
-        // this.fillFloors(position)
+        this.floors.push(new Floor(position.x, position.y));
+
+        for (var i = 0; i < directions.length; i++) {
+            var d = directions[i];
+            var p = position.copy().add(d);
+            this.fillFloors(p);
+        }
     }
 }
 Sokoban.prototype.initLevel = function() {
@@ -194,6 +196,8 @@ Sokoban.prototype.initLevel = function() {
         }
     }
 
+    this.fillFloors(this.player.position);
+    print(this.floors.length);
     this.setLevelText(this.currentLevel);
     this.setMovesText(this.moves);
     this.setPushesText(this.pushes);
@@ -369,7 +373,10 @@ Goal.prototype.display = function() {
     translate(this.position.x, this.position.y);
     ellipseMode(CORNER);
     noStroke();
-    fill(0, 0, 255);
+    fill(0, 0, 255, 96);
+    if (sokoban.boxes.getItem(this.position)) {
+        fill(0, 0, 255, 180);
+    }
     ellipse(0, 0, 1, 1);
     pop();
 }
@@ -409,8 +416,10 @@ Floor.prototype.update = function() {}
 Floor.prototype.display = function() {
     push();
     translate(this.position.x, this.position.y);
-    fill(128);
+    fill(128, 0, 128, 80);
+    noStroke();
     rect(0, 0, 1, 1);
+    strokeCap(SQUARE);
     stroke(255, 128);
     strokeWeight(0.01);
     line(0, 0.5, 1, 0.5);
