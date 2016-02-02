@@ -97,7 +97,9 @@ DisplayableList.prototype.getItem = function(position) {
 function Sokoban() {
     this.currentLevel = 0;
     this.moves = 0;
+    this.pushes = 0;
     this.tileSize = (width - 1) / 10;
+    this.floors = new DisplayableList();
     this.walls = new Walls();
     this.goals = new DisplayableList();
     this.boxes = new DisplayableList();
@@ -132,18 +134,37 @@ Sokoban.prototype.loadTileMap = {
     '.': function(x, y) {
         sokoban.goals.push(new Goal(x, y));
     },
-    '-': function(x, y) {}
+    '-': function(x, y) {
+        //sokoban.floors.push(new Floor(x, y))
+    }
 }
 Sokoban.prototype.loadTile = function(tile, x, y) {
     this.loadTileMap[tile](x, y);
+
+    // Do floors()
+//    var position = this.player.position.copy();
+//    this.floors.push(position.x, position.y);
+
+}
+Sokoban.prototype.fillFloors = function(position) {
+    var directions = [this.RIGHT, this.DOWN, this.LEFT, this.UP];
+
+    if (floors.getItem(position)) {
+        return;
+    } else {
+        // Create floor
+        // this.fillFloors(position)
+    }
 }
 Sokoban.prototype.initLevel = function() {
+    this.floors = new DisplayableList();
     this.walls = new Walls();
     this.goals = new DisplayableList();
     this.boxes = new DisplayableList();
     this.player = new Player();
     this.undo = [];
     this.moves = 0;
+    this.pushes = 0;
     var encodedLevel = levels[this.currentLevel];
     var x = 0;
     var y = 0;
@@ -175,6 +196,7 @@ Sokoban.prototype.initLevel = function() {
 
     this.setLevelText(this.currentLevel);
     this.setMovesText(this.moves);
+    this.setPushesText(this.pushes);
     this.updateViewport();
 }
 Sokoban.prototype.updateViewport = function() {
@@ -185,6 +207,7 @@ Sokoban.prototype.updateViewport = function() {
     this.scale = (width - 1) / (m + 1 + borderSize);
 }
 Sokoban.prototype.update = function() {
+    this.floors.update();
     this.walls.update();
     this.goals.update();
     this.boxes.update();
@@ -196,10 +219,14 @@ Sokoban.prototype.setLevelText = function(v) {
 Sokoban.prototype.setMovesText = function(v) {
     document.getElementById("sokoban-moves").innerHTML = v;
 }
+Sokoban.prototype.setPushesText = function(v) {
+    document.getElementById("sokoban-pushes").innerHTML = v;
+}
 Sokoban.prototype.display = function() {
     push();
     scale(this.scale);
     translate(this.levelOffset.x, this.levelOffset.y);
+    this.floors.display();
     this.goals.display();
     this.boxes.display();
     this.player.display();
@@ -220,6 +247,7 @@ Sokoban.prototype.movePlayer = function(direction) {
                 didMove = true;
                 box.position.add(direction);
                 move.box = box;
+                this.setPushesText(++this.pushes);
             }
         }
     }
@@ -268,6 +296,7 @@ Sokoban.prototype.undoMove = function() {
         this.player.position.add(move.direction);
         if (move.box) {
             move.box.position.add(move.direction);
+            this.setPushesText(--this.pushes);
         }
         this.setMovesText(--this.moves);
     }
@@ -371,5 +400,20 @@ Player.prototype.display = function() {
     noStroke();
     fill(255, 0, 0);
     rect(0, 0, 0.5, 0.55);
+    pop();
+}
+function Floor(x, y) {
+    this.position = createVector(x, y);
+}
+Floor.prototype.update = function() {}
+Floor.prototype.display = function() {
+    push();
+    translate(this.position.x, this.position.y);
+    fill(128);
+    rect(0, 0, 1, 1);
+    stroke(255, 128);
+    strokeWeight(0.01);
+    line(0, 0.5, 1, 0.5);
+    line(0.5, 0, 0.5, 1);
     pop();
 }

@@ -21,13 +21,34 @@ body {
     margin: 0px;
     margin: 0 auto;
 }
+#sokoban-info ul {
+    background: #000;
+    width: 100%;
+    color: #fff;
+    list-style-type: none;
+    float: left;
+    padding: 0px;
+    margin: 0px;
+}
+#sokoban-info li {
+    float: left;
+    padding: 0px;
+    margin: 0px;
+    margin-left: 5px;
+    padding-right: 30px;
+}
 </style>
 
 </head>
 <body>
 <div id="game-window">
-    <div>Level <span id="sokoban-level"></span></div>
-    <div>Moves <span id="sokoban-moves"></span></div>
+    <div id="sokoban-info">
+        <ul>
+            <li>Level <span id="sokoban-level"></span></li>
+            <li>Moves <span id="sokoban-moves"></span></li>
+            <li>Pushes <span id="sokoban-pushes"></span></li>
+        </ul>
+    </div>
     <div id="game-canvas"></div>
     <div>
         <ul>
