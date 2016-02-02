@@ -373,13 +373,14 @@ Goal.prototype.update = function() {}
 Goal.prototype.display = function() {
     push();
     translate(this.position.x, this.position.y);
+    translate(0.125, 0.125);
     ellipseMode(CORNER);
     noStroke();
     fill(0, 0, 255, 96);
     if (sokoban.boxes.getItem(this.position)) {
         fill(0, 0, 255, 180);
     }
-    ellipse(0, 0, 1, 1);
+    ellipse(0, 0, 0.75, 0.75);
     pop();
 }
 
