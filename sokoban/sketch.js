@@ -55,8 +55,8 @@ var levels = [
 ];
 
 function setup() {
-    var c = createCanvas(400, 400);
-    c.parent("game-window");
+    var c = createCanvas(500, 500);
+    c.parent("game-canvas");
     sokoban = new Sokoban();
     sokoban.initLevel();
 }
@@ -200,10 +200,10 @@ Sokoban.prototype.display = function() {
     push();
     scale(this.scale);
     translate(this.levelOffset.x, this.levelOffset.y);
-    this.walls.display();
     this.goals.display();
     this.boxes.display();
     this.player.display();
+    this.walls.display();
     pop();
 }
 Sokoban.prototype.movePlayer = function(direction) {
@@ -262,7 +262,7 @@ Sokoban.prototype.processKey = function(k) {
     }
 }
 Sokoban.prototype.undoMove = function() {
-    if (this.undo.length > 0) {
+    if (this.undo.length) {
         var move = this.undo.pop();
         move.direction.mult(-1);
         this.player.position.add(move.direction);
@@ -273,17 +273,15 @@ Sokoban.prototype.undoMove = function() {
     }
 }
 Sokoban.prototype.nextLevel = function() {
-    this.currentLevel++;
-    this.currentLevel = min(this.currentLevel, levels.length - 1);
-    this.initLevel(this.currentLevel);
+    this.currentLevel += this.currentLevel < levels.length - 1 ? 1 : 0;
+    this.initLevel();
 }
 Sokoban.prototype.previousLevel = function() {
-    this.currentLevel--;
-    this.currentLevel = max(this.currentLevel, 0);
-    this.initLevel(this.currentLevel);
+    this.currentLevel -= this.currentLevel > 0 ? 1 : 0;
+    this.initLevel();
 }
 Sokoban.prototype.resetLevel = function() {
-    this.initLevel(this.currentLevel);
+    this.initLevel();
 }
 Sokoban.prototype.didWin = function() {
     for (var i = 0; i < this.goals.length; i++) {

@@ -8,27 +8,36 @@
 <script src="libraries/p5.sound.js" type="text/javascript"></script>
 <script src="sketch.js" type="text/javascript"></script>
 <style>
-viewport {
-    padding: 0; margin: 0;
+body {
+    padding: 0px;
+    margin: 0px;
+    background: #eee;
+    font-family: courier;
 }
-canvas {
-    vertical-align: top;
+#game-window {
+    width: 500px;
+    height: 500px;
+    padding: 0px;
+    margin: 0px;
+    margin: 0 auto;
 }
 </style>
 
 </head>
 <body>
-<div id="game-window"></div>
-<div>Level <span id="sokoban-level"></span></div>
-<div>Moves <span id="sokoban-moves"></span></div>
-<div>
-<ul>
-<li>ARROWS or WASD - Move Avater</li>
-<li>U - Undo</li>
-<li>N - Next Level</li>
-<li>P - Previous Level</li>
-<li>R - Reset Level</li>
-</ul>
+<div id="game-window">
+    <div>Level <span id="sokoban-level"></span></div>
+    <div>Moves <span id="sokoban-moves"></span></div>
+    <div id="game-canvas"></div>
+    <div>
+        <ul>
+            <li>ARROWS or WASD - Move Avater</li>
+            <li>U - Undo</li>
+            <li>N - Next Level</li>
+            <li>P - Previous Level</li>
+            <li>R - Reset Level</li>
+        </ul>
+    </div>
 </div>
 </body>
 </html>
