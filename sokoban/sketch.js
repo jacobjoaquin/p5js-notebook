@@ -16,7 +16,6 @@
 // }
 
 var sokoban;
-var processGlyph;
 var levels = [
     '11#|#@-$5-.#|11#',
     '--3#|3#.#|#.$$##|##@$.#|-5#',
@@ -197,10 +196,6 @@ Sokoban.prototype.initLevel = function() {
     }
 
     this.fillFloors(this.player.position);
-    print(this.floors.length);
-    this.setLevelText(this.currentLevel);
-    this.setMovesText(this.moves);
-    this.setPushesText(this.pushes);
     this.updateViewport();
 }
 Sokoban.prototype.updateViewport = function() {
@@ -226,7 +221,14 @@ Sokoban.prototype.setMovesText = function(v) {
 Sokoban.prototype.setPushesText = function(v) {
     document.getElementById("sokoban-pushes").innerHTML = v;
 }
+Sokoban.prototype.updateScoreBoard = function() {
+    this.setLevelText(this.currentLevel);
+    this.setMovesText(this.moves);
+    this.setPushesText(this.pushes);
+}
 Sokoban.prototype.display = function() {
+    this.updateScoreBoard();
+
     push();
     scale(this.scale);
     translate(this.levelOffset.x, this.levelOffset.y);
@@ -251,7 +253,7 @@ Sokoban.prototype.movePlayer = function(direction) {
                 didMove = true;
                 box.position.add(direction);
                 move.box = box;
-                this.setPushesText(++this.pushes);
+                this.pushes++;
             }
         }
     }
@@ -260,7 +262,7 @@ Sokoban.prototype.movePlayer = function(direction) {
         move.direction = direction.copy();
         this.undo.push(move);
         this.player.position = v1;
-        this.setMovesText(++this.moves);
+        this.moves++;
         if (this.didWin()) {
             this.nextLevel();
         }
@@ -300,9 +302,9 @@ Sokoban.prototype.undoMove = function() {
         this.player.position.add(move.direction);
         if (move.box) {
             move.box.position.add(move.direction);
-            this.setPushesText(--this.pushes);
+            this.pushes--;
         }
-        this.setMovesText(--this.moves);
+        this.moves--;
     }
 }
 Sokoban.prototype.nextLevel = function() {
@@ -371,13 +373,14 @@ Goal.prototype.update = function() {}
 Goal.prototype.display = function() {
     push();
     translate(this.position.x, this.position.y);
+    translate(0.125, 0.125);
     ellipseMode(CORNER);
     noStroke();
     fill(0, 0, 255, 96);
     if (sokoban.boxes.getItem(this.position)) {
         fill(0, 0, 255, 180);
     }
-    ellipse(0, 0, 1, 1);
+    ellipse(0, 0, 0.75, 0.75);
     pop();
 }
 
