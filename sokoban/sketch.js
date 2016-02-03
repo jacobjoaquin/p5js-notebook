@@ -61,7 +61,7 @@ function setup() {
 }
 
 function draw() {
-    background(180);
+    background(64);
     sokoban.update();
     sokoban.display();
 }
@@ -361,7 +361,8 @@ Wall.prototype.update = function() {}
 Wall.prototype.display = function() {
     push();
     translate(this.position.x, this.position.y);
-    strokeWeight(0.1);
+    strokeWeight(0.05);
+    fill(224);
     rect(0, 0, 1, 1);
     pop();
 }
@@ -375,11 +376,9 @@ Goal.prototype.display = function() {
     translate(this.position.x, this.position.y);
     translate(0.125, 0.125);
     ellipseMode(CORNER);
-    noStroke();
+    stroke(255, 128);
+    strokeWeight(0.02);
     fill(0, 0, 255, 96);
-    if (sokoban.boxes.getItem(this.position)) {
-        fill(0, 0, 255, 180);
-    }
     ellipse(0, 0, 0.75, 0.75);
     pop();
 }
@@ -393,8 +392,9 @@ Box.prototype.display = function() {
     translate(this.position.x, this.position.y);
     translate(0.25, 0.25);
     ellipseMode(CORNER);
-    noStroke();
-    fill(255, 220, 0);
+    stroke(255, 220, 0, 224);
+    strokeWeight(0.02);
+    fill(255, 220, 0, 180);
     ellipse(0, 0, 0.5, 0.5);
     pop();
 }
@@ -406,10 +406,11 @@ Player.prototype.update = function() {}
 Player.prototype.display = function() {
     push();
     translate(this.position.x, this.position.y);
-    translate(0.25, 0.25);
-    noStroke();
-    fill(255, 0, 0);
-    rect(0, 0, 0.5, 0.55);
+    translate(0.125, 0.125);
+    strokeWeight(0.02);
+    stroke(255, 0, 128);
+    fill(255, 0, 128, 196);
+    rect(0, 0, 0.75, 0.75);
     pop();
 }
 function Floor(x, y) {
@@ -419,12 +420,12 @@ Floor.prototype.update = function() {}
 Floor.prototype.display = function() {
     push();
     translate(this.position.x, this.position.y);
-    fill(128, 0, 128, 80);
+    fill(0, 0, 255, 128);
     noStroke();
     rect(0, 0, 1, 1);
     strokeCap(SQUARE);
     stroke(255, 128);
-    strokeWeight(0.01);
+    strokeWeight(0.02);
     line(0, 0.5, 1, 0.5);
     line(0.5, 0, 0.5, 1);
     pop();
