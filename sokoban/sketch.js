@@ -166,37 +166,39 @@ Sokoban.prototype.initLevel = function() {
     this.undo = [];
     this.moves = 0;
     this.pushes = 0;
-    var encodedLevel = levels[this.currentLevel];
+    this.loadLevelFromRLE();
+    this.fillFloors(this.player.position);
+    this.updateViewport();
+}
+Sokoban.prototype.loadLevelFromRLE = function() {
+    var rle = levels[this.currentLevel];
     var x = 0;
     var y = 0;
     var i = 0;
 
-    while (i < encodedLevel.length) {
-        var e = encodedLevel[i++];
-        if (!isNaN(e)) {
+    while (i < rle.length) {
+        var c = rle[i++];
+        if (!isNaN(c)) {
             // Check and get more than single digit
-            var e1 = encodedLevel[i++];
-            while (!isNaN(e1)) {
-                e += e1;
-                e1 = encodedLevel[i++];
+            var c1 = rle[i++];
+            while (!isNaN(c1)) {
+                c += c1;
+                c1 = rle[i++];
             }
 
             // Create multiple tiles
-            e = parseInt(e);
-            var t = x + e;
+            c = parseInt(c);
+            var t = x + c;
             while (x < t) {
-                this.loadTile(e1, x++, y);
+                this.loadTile(c1, x++, y);
             }
-        } else if (e === '|') {
+        } else if (c === '|') {
             x = 0;
             y++;
         } else {
-            this.loadTile(e, x++, y);
+            this.loadTile(c, x++, y);
         }
     }
-
-    this.fillFloors(this.player.position);
-    this.updateViewport();
 }
 Sokoban.prototype.updateViewport = function() {
     var borderSize = 1;
