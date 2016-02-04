@@ -105,11 +105,13 @@ function Sokoban() {
     this.player = new Player();
     this.levelOffset = createVector(0, 0);
     this.scale = 1;
-    this.UP = createVector(0, -1);
-    this.LEFT = createVector(-1, 0);
-    this.DOWN = createVector(0, 1);
-    this.RIGHT = createVector(1, 0);
+    this.sokoEdit = undefined;
+    this.mode = "play";
 }
+Sokoban.prototype.UP = new p5.Vector(0, -1);
+Sokoban.prototype.LEFT = new p5.Vector(-1, 0);
+Sokoban.prototype.DOWN = new p5.Vector(0, 1);
+Sokoban.prototype.RIGHT = new p5.Vector(1, 0);
 Sokoban.prototype.loadTileMap = {
     '#': function(x, y) {
         sokoban.walls.push(new Wall(x, y));
@@ -207,13 +209,6 @@ Sokoban.prototype.updateViewport = function() {
     this.levelOffset.set(borderSize / 2 + (m - b[1].x) / 2, borderSize / 2 + (m - b[1].y) / 2);
     this.scale = (width - 1) / (m + 1 + borderSize);
 }
-Sokoban.prototype.update = function() {
-    this.floors.update();
-    this.walls.update();
-    this.goals.update();
-    this.boxes.update();
-    this.player.update();
-}
 Sokoban.prototype.setLevelText = function(v) {
     document.getElementById("sokoban-level").innerHTML = v;
 }
@@ -227,19 +222,6 @@ Sokoban.prototype.updateScoreBoard = function() {
     this.setLevelText(this.currentLevel);
     this.setMovesText(this.moves);
     this.setPushesText(this.pushes);
-}
-Sokoban.prototype.display = function() {
-    this.updateScoreBoard();
-
-    push();
-    scale(this.scale);
-    translate(this.levelOffset.x, this.levelOffset.y);
-    this.floors.display();
-    this.goals.display();
-    this.boxes.display();
-    this.player.display();
-    this.walls.display();
-    pop();
 }
 Sokoban.prototype.movePlayer = function(direction) {
     var v1 = direction.copy().add(this.player.position);
@@ -328,6 +310,50 @@ Sokoban.prototype.didWin = function() {
         }
     }
     return true;
+}
+Sokoban.prototype.updatePlay = function() {
+    this.floors.update();
+    this.walls.update();
+    this.goals.update();
+    this.boxes.update();
+    this.player.update();
+}
+Sokoban.prototype.displayPlay = function() {
+    this.updateScoreBoard();
+    push();
+    scale(this.scale);
+    translate(this.levelOffset.x, this.levelOffset.y);
+    this.floors.display();
+    this.goals.display();
+    this.boxes.display();
+    this.player.display();
+    this.walls.display();
+    pop();
+}
+Sokoban.prototype.updateEdit = function() {
+}
+Sokoban.prototype.displayEdit = function() {
+}
+Sokoban.prototype.update = function() {
+    if (this.mode === "edit") {
+        this.updateEdit();
+    } else {
+        this.updatePlay();
+    }
+}
+Sokoban.prototype.display = function() {
+    if (this.mode === "edit") {
+        this.updateEdit();
+    } else {
+        this.displayPlay();
+    }
+}
+
+function SokoEdit(sokoban) {
+    this.sokoban = sokoban;
+}
+SokoEdit.prototype.test = function() {
+    print(this.sokoban.currentLevel);
 }
 
 function Walls() {}
@@ -432,3 +458,4 @@ Floor.prototype.display = function() {
     line(0.5, 0, 0.5, 1);
     pop();
 }
+
