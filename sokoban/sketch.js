@@ -278,6 +278,17 @@ Sokoban.prototype.processKey = function(k) {
     } else if (s === "r") {
         this.resetLevel();
     }
+
+    // Handle mode
+    else if (s === "m") {
+        if (this.mode === "play") {
+            this.mode = "edit";
+            this.initEditor();
+        } else if (this.mode === "edit") {
+            this.mode = "play";
+            this.initLevel();
+        }
+    }
 }
 Sokoban.prototype.undoMove = function() {
     if (this.undo.length) {
@@ -311,6 +322,10 @@ Sokoban.prototype.didWin = function() {
     }
     return true;
 }
+Sokoban.prototype.initEditor = function() {
+    print("init");
+    this.sokoEdit = new SokoEdit(this);
+}
 Sokoban.prototype.updatePlay = function() {
     this.floors.update();
     this.walls.update();
@@ -331,8 +346,10 @@ Sokoban.prototype.displayPlay = function() {
     pop();
 }
 Sokoban.prototype.updateEdit = function() {
+    this.sokoEdit.update();
 }
 Sokoban.prototype.displayEdit = function() {
+    this.sokoEdit.display();
 }
 Sokoban.prototype.update = function() {
     if (this.mode === "edit") {
@@ -352,8 +369,9 @@ Sokoban.prototype.display = function() {
 function SokoEdit(sokoban) {
     this.sokoban = sokoban;
 }
-SokoEdit.prototype.test = function() {
-    print(this.sokoban.currentLevel);
+SokoEdit.prototype.update = function() {
+}
+SokoEdit.prototype.display = function() {
 }
 
 function Walls() {}
