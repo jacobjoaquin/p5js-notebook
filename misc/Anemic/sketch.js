@@ -17,17 +17,12 @@ function draw() {
     scale(min(width, height) / 500 * 0.8);
     var rSub = map(mouseX, 0, width, 5, 20);
     var aAdd = map(mouseY, 0, height, PI / 2.0, PI / 48.0);
-    cic(250, rSub, angle, aAdd);
+    anemic(250, rSub, angle, aAdd);
     angle += PI / 64.0;
     pop();
-
-
-    fill(255, 180);
-    stroke(0, 180);
-    // text("Anemic Cinema Interactive", 5, height - 20);
 }
 
-function cic(radius, rSub, angle, aAdd) {
+function anemic(radius, rSub, angle, aAdd) {
     push();
     do {
         fill(c);
