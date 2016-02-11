@@ -5,7 +5,7 @@ var nx = 0,
     nzInc = 0.05;
 
 function setup() {
-    createCanvas(500, 500);
+    createCanvas(500, 500).id("test");
     noStroke();
     background(128);
 }

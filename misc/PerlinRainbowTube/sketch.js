@@ -9,7 +9,7 @@ function setup() {
 }
 
 function draw() {
-    fill(frameCount % 256, 255, 255);
+    fill(frameCount % 360, 255, 255);
     var x = noise(nx) * width;
     var y = noise(ny) * height;
     var z = map(noise(nz), 0, 1, 0, 75);
