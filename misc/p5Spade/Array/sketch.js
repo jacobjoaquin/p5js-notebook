@@ -1,7 +1,7 @@
 var diameters = [10, 10, 20, 30, 50, 80, 130];
 
 function setup() {
-    createCanvas(500, 500);
+    createCanvas(400, 400);
     noLoop();
 }
 

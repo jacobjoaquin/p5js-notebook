@@ -9,28 +9,39 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script src="../lib/p5Spade.js" type="text/javascript"></script>
 
-    <style>body {padding: 0; margin: 0;} canvas {vertical-align: top;}
+    <style>
+body {
+    padding: 0;
+    margin: 0;
+    background: rgb(180, 0, 180);
+}
+canvas {
+    vertical-align: top;
+}
 #fullcontainer {
     overflow: auto;
 }
 #spade .p5canvas {
-    width: 400px;
-    height: 400px;
-    float: left;
+    width: 500px;
+    height: 500px;
+    float: right;
 }
 #spade .editorcontainer {
     width: 700px;
     height: 600px;
     position: relative;
-    left: 400px;
 }
 #spade .editor { 
     position: absolute;
-    top: 0;
+    top: 20px;
     right: 0;
     bottom: 0;
     left: 0;
     font-size: 10px;
+    
+}
+#spade .transport {
+    background: #000;
 }
 </style>
   </head>
@@ -41,12 +52,6 @@
 <script>
 var p5s;
 $(document).ready(function() {
-/*
-    var $run = $('#runme');
-    $run.click(function() {
-       p5s.run(); 
-    });
-*/
     setTimeout(function() {
         $.ajax({
             url: "sketch.js",
